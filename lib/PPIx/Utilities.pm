@@ -55,9 +55,9 @@ L<http://rt.cpan.org>.
 Elliot Shank  C<< <perl@galumph.com> >>
 
 
-=head1 LICENSE AND COPYRIGHT
+=head1 COPYRIGHT
 
-Copyright (C)2009, Elliot Shank C<< <perl@galumph.com> >>.
+Copyright (c)2009, Elliot Shank C<< <perl@galumph.com> >>.
 
 This module is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself. See L<perlartistic>.
@@ -85,6 +85,13 @@ SOFTWARE), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGES.
 
 =cut
+
+##############################################################################
+#      $URL$
+#     $Date$
+#   $Author$
+# $Revision$
+##############################################################################
 
 # Local Variables:
 #   mode: cperl

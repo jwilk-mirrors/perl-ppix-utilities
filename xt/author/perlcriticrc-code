@@ -21,7 +21,7 @@ strict = 1
 [-CodeLayout::RequireTidyCode]
 
 [Documentation::PodSpelling]
-stop_words =
+stop_words = PPIx PPI
 
 [Documentation::RequirePodSections]
 lib_sections    = NAME|DESCRIPTION|AUTHOR|COPYRIGHT
