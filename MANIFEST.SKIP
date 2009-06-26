@@ -1,0 +1,69 @@
+^tags$
+
+# Version Control files
+^\.cvsignore$
+CVS
+RCS
+,v$
+\.svn
+
+# Distribution files
+\.zip$
+\.gz$
+\.tgz$
+\.tar\.gz$
+\.tar$
+\-docs\b
+
+# Devel/Build files
+^\.perltidyrc$
+^t/01distribution\.t$
+\.devel\b
+^_build
+^Build$
+^blib
+^MANIFEST\.SKIP$
+^Makefile$
+^cover_db
+^nytprof
+^pm_to_blib$
+^Makefile.old$
+^patch
+\.patch$
+\.rej$
+\.old$
+^t/00_local_.*t$
+^t/perlcriticrc$
+^tools
+^tmon\.out$
+\.gdb_history$
+\.ERR$
+
+# Temp/backup files
+~$
+\.bak$
+^temp[^l]
+^temp$
+\.tmp$
+\.\#.+
+\#$
+\.swp$
+
+# Mac/SMB files
+\.DS_Store
+^\._.+
+\bIcon\x0d
+
+# Flash development
+\.swd$
+^test\.swf$
+
+# Avoid Eclipse files.
+\.project\b
+^\.includepath$
+
+# Avoid my Ant build script
+^build\.xml$
+
+# Avoid archives of this distribution
+\bPPIx-Utilities-v?[\d.\_]+
