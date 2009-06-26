@@ -14,17 +14,18 @@ use PPIx::Utilities::Node qw< split_ppi_node_by_namespace >;
 
 
 use Test::Deep qw< cmp_deeply >;
-use Test::More tests => 1;
+use Test::More tests => 2;
 
 
-my $source = <<'END_SOURCE';
+{
+    my $source = <<'END_SOURCE';
 package Foo;
 
 $x = 1;
 END_SOURCE
 
-my %expected = (
-    Foo => [ <<'END_EXPECTED' ],
+    my %expected = (
+        Foo => [ <<'END_EXPECTED' ],
 PPI::Document
   PPI::Statement::Package
     PPI::Token::Word    'package'
@@ -42,9 +43,33 @@ PPI::Document
     PPI::Token::Structure   ';'
   PPI::Token::Whitespace    '\n'
 END_EXPECTED
-);
+    );
 
-_test($source, \%expected, 'Single namespace.');
+    _test($source, \%expected, 'Single namespace.');
+} # end scope block
+
+
+{
+    my $source = <<'END_SOURCE';
+$x = 1;
+END_SOURCE
+
+    my %expected = (
+        main => [ <<'END_EXPECTED' ],
+PPI::Document
+  PPI::Statement
+    PPI::Token::Symbol      '$x'
+    PPI::Token::Whitespace      ' '
+    PPI::Token::Operator    '='
+    PPI::Token::Whitespace      ' '
+    PPI::Token::Number      '1'
+    PPI::Token::Structure   ';'
+  PPI::Token::Whitespace    '\n'
+END_EXPECTED
+    );
+
+    _test($source, \%expected, 'Default namespace.');
+} # end scope block
 
 
 sub _test {
@@ -104,6 +129,4 @@ sub _expand_tabs {
 #   indent-tabs-mode: nil
 #   c-indentation-style: bsd
 # End:
-# setup vim: set filetype=perl tabstop=4 softtabstop=4 expandtab :
-# setup vim: set shiftwidth=4 shiftround textwidth=78 nowrap autoindent :
-# setup vim: set foldmethod=indent foldlevel=0 :
+# ex: set ts=8 sts=4 sw=4 tw=78 ft=perl expandtab :
