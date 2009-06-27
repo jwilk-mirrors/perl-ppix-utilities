@@ -60,9 +60,14 @@ my $builder = $class->new(
     sign                => 0,
 
     requires            => {
+        Readonly    => 0,
     },
 
     build_requires      => {
+        # We can't deal with later stuff due to the "#line" directive support.
+        'PPI::Document' => '== 1.203',
+        'PPI::Dumper'   => '== 1.203',
+        'Test::Deep'    => 0,
         'Test::More'    => 0,
     },
 
