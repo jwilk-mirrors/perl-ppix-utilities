@@ -48,6 +48,8 @@ my $class = Module::Build->subclass( code => <<'END_SUBCLASS' );
 
 END_SUBCLASS
 
+my $ppi_version = '1.207_01';
+
 my $builder = $class->new(
     module_name         => 'PPIx::Utilities',
     dist_author         => 'Elliot Shank <perl@galumph.com>',
@@ -60,18 +62,25 @@ my $builder = $class->new(
     sign                => 0,
 
     requires            => {
-        Readonly    => 0,
+        'base'                      => 0,
+        'Exporter'                  => 0,
+        'PPI::Document::Fragment'   => $ppi_version,
+        'Readonly'                  => 0,
+        'Scalar::Util'              => 0,
+        'strict'                    => 0,
+        'Task::Weaken'              => 0, # Ensure a proper Scalar::Util.
+        'warnings'                  => 0,
     },
 
     build_requires      => {
-        # We can't deal with later stuff due to the "#line" directive support.
-        'PPI::Document' => '== 1.203',
-        'PPI::Dumper'   => '== 1.203',
+        'PPI::Document' => $ppi_version,
+        'PPI::Dumper'   => $ppi_version,
         'Test::Deep'    => 0,
         'Test::More'    => 0,
     },
 
     recommends          => {
+        'Readonly::XS'  => 0,
     },
 
     meta_merge          => {
