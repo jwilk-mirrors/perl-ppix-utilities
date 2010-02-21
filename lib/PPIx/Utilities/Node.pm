@@ -20,7 +20,6 @@ Readonly::Array our @EXPORT_OK => qw<
 >;
 
 
-use 5.010;
 sub split_ppi_node_by_namespace {
     my ($node) = @_;
 
@@ -36,7 +35,7 @@ sub split_ppi_node_by_namespace {
     } # end if
 
     my %nodes_by_namespace;
-    _split_ppi_node_by_namespace_recursive(
+    _split_ppi_node_by_namespace_in_lexical_scope(
         $node, 'main', undef, \%nodes_by_namespace,
     );
 
@@ -72,8 +71,19 @@ sub _split_ppi_node_by_namespace_single {
 } # end _split_ppi_node_by_namespace_single()
 
 
-sub _split_ppi_node_by_namespace_recursive {
-    my ($node, $namespace, $fragment, $nodes_by_namespace) = @_;
+sub _split_ppi_node_by_namespace_in_lexical_scope {
+    my ($node, $initial_namespace, $initial_fragment, $nodes_by_namespace)
+        = @_;
+
+    my %scope_fragments_by_namespace;
+
+    # I certainly hope a value isn't going to exist at address 0.
+    my $initial_fragment_address = refaddr $initial_fragment || 0;
+    my ($namespace, $fragment) = ($initial_namespace, $initial_fragment);
+
+    if ($initial_fragment) {
+        $scope_fragments_by_namespace{$namespace} = $initial_fragment;
+    } # end if
 
     foreach my $child ( $node->children() ) {
         if ( $child->isa('PPI::Statement::Package') ) {
@@ -94,32 +104,35 @@ sub _split_ppi_node_by_namespace_recursive {
             } # end while
 
             if ($block) {
-                _split_ppi_node_by_namespace_recursive(
+                _split_ppi_node_by_namespace_in_lexical_scope(
                     $block, $namespace, $fragment, $nodes_by_namespace,
                 );
             } # end if
         } # end if
 
-        $fragment ||= PPI::Document::Fragment->new();
-# Need to fix these to use exceptions.  Thankfully the P::C tests will
-# insist that this happens.
-#
-# Need to not do this for the block in test 4.
-        $child->remove() or die 'Could not remove child from parent.';
-        $fragment->add_element($child) or die 'Could not add child to fragment.';
-    } # end if
+        $fragment = $scope_fragments_by_namespace{$namespace}
+            ||= PPI::Document::Fragment->new();
 
-    if ($fragment) {
-       _push_fragment($nodes_by_namespace, $namespace, $fragment);
-    } # end if
+        if ($initial_fragment_address != refaddr $fragment) {
+            # Need to fix these to use exceptions.  Thankfully the P::C tests
+            # will insist that this happens.
+            $child->remove() or die 'Could not remove child from parent.';
+            $fragment->add_element($child)
+                or die 'Could not add child to fragment.';
+        } # end if
+    } # end foreach
+
+    while ( ($namespace, $fragment) = each %scope_fragments_by_namespace ) {
+        _push_fragment($nodes_by_namespace, $namespace, $fragment);
+    } # end while
 
     return;
-} # end _split_ppi_node_by_namespace_recursive()
+} # end _split_ppi_node_by_namespace_in_lexical_scope()
 
 
 # Due to $fragment being passed into recursive calls to
-# _split_ppi_node_by_namespace_recursive(), we can end up attempting to put
-# the same fragment into a namespace's nodes multiple times.
+# _split_ppi_node_by_namespace_in_lexical_scope(), we can end up attempting to
+# put the same fragment into a namespace's nodes multiple times.
 sub _push_fragment {
     my ($nodes_by_namespace, $namespace, $fragment) = @_;
 
