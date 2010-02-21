@@ -108,14 +108,23 @@ sub _split_ppi_node_by_namespace_in_lexical_scope {
             } # end while
 
             if ($block) {
+                if (not $fragment) {
+                    $fragment = _get_fragment_for_split_ppi_node(
+                        $nodes_by_namespace,
+                        \%scope_fragments_by_namespace,
+                        $namespace,
+                    );
+                } # end if
+
                 _split_ppi_node_by_namespace_in_lexical_scope(
                     $block, $namespace, $fragment, $nodes_by_namespace,
                 );
             } # end if
         } # end if
 
-        $fragment = $scope_fragments_by_namespace{$namespace}
-            ||= PPI::Document::Fragment->new();
+        $fragment = _get_fragment_for_split_ppi_node(
+            $nodes_by_namespace, \%scope_fragments_by_namespace, $namespace,
+        );
 
         if ($initial_fragment_address != refaddr $fragment) {
             # Need to fix these to use exceptions.  Thankfully the P::C tests
@@ -126,12 +135,22 @@ sub _split_ppi_node_by_namespace_in_lexical_scope {
         } # end if
     } # end foreach
 
-    while ( ($namespace, $fragment) = each %scope_fragments_by_namespace ) {
-        _push_fragment($nodes_by_namespace, $namespace, $fragment);
-    } # end while
-
     return;
 } # end _split_ppi_node_by_namespace_in_lexical_scope()
+
+
+sub _get_fragment_for_split_ppi_node {
+    my ($nodes_by_namespace, $scope_fragments_by_namespace, $namespace) = @_;
+
+    my $fragment;
+    if ( not $fragment = $scope_fragments_by_namespace->{$namespace} ) {
+        $fragment = PPI::Document::Fragment->new();
+        $scope_fragments_by_namespace->{$namespace} = $fragment;
+        _push_fragment($nodes_by_namespace, $namespace, $fragment);
+    } # end if
+
+    return $fragment;
+} # end _get_fragment_for_split_ppi_node()
 
 
 # Due to $fragment being passed into recursive calls to

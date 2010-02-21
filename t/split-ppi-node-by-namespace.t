@@ -11,13 +11,14 @@ our $VERSION = '1.001';
 use Readonly;
 
 
+use Data::Dumper qw< >;
 use PPI::Document qw< >;
 use PPI::Dumper qw< >;
 use PPIx::Utilities::Node qw< split_ppi_node_by_namespace >;
 
 
 use Test::Deep qw< cmp_deeply >;
-use Test::More tests => 8;
+use Test::More tests => 10;
 
 
 Readonly::Scalar my $DUMP_INDENT => 4;
@@ -264,6 +265,60 @@ END_EXPECTED_FOO
     );
 
     _test($source, \%expected, 'Simple multiple namespaces: default followed by non-default.');
+} # end scope block
+
+
+{
+    my $source = <<'END_SOURCE';
+package Foo;
+$x = 1;
+
+package main;
+
+$y = 2;
+END_SOURCE
+
+    my %expected = (
+        main => [ <<'END_EXPECTED_MAIN' ],
+                    PPI::Document::Fragment
+                        PPI::Statement::Package
+[    4,   1,   1 ]         PPI::Token::Word     'package'
+[    4,   8,   8 ]         PPI::Token::Whitespace   ' '
+[    4,   9,   9 ]         PPI::Token::Word     'main'
+[    4,  13,  13 ]         PPI::Token::Structure    ';'
+[    4,  14,  14 ]     PPI::Token::Whitespace   '\n'
+[    5,   1,   1 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement
+[    6,   1,   1 ]         PPI::Token::Symbol   '$y'
+[    6,   3,   3 ]         PPI::Token::Whitespace   ' '
+[    6,   4,   4 ]         PPI::Token::Operator     '='
+[    6,   5,   5 ]         PPI::Token::Whitespace   ' '
+[    6,   6,   6 ]         PPI::Token::Number   '2'
+[    6,   7,   7 ]         PPI::Token::Structure    ';'
+[    6,   8,   8 ]     PPI::Token::Whitespace   '\n'
+END_EXPECTED_MAIN
+
+        Foo => [ <<'END_EXPECTED_FOO' ],
+                    PPI::Document::Fragment
+                        PPI::Statement::Package
+[    1,   1,   1 ]         PPI::Token::Word     'package'
+[    1,   8,   8 ]         PPI::Token::Whitespace   ' '
+[    1,   9,   9 ]         PPI::Token::Word     'Foo'
+[    1,  12,  12 ]         PPI::Token::Structure    ';'
+[    1,  13,  13 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement
+[    2,   1,   1 ]         PPI::Token::Symbol   '$x'
+[    2,   3,   3 ]         PPI::Token::Whitespace   ' '
+[    2,   4,   4 ]         PPI::Token::Operator     '='
+[    2,   5,   5 ]         PPI::Token::Whitespace   ' '
+[    2,   6,   6 ]         PPI::Token::Number   '1'
+[    2,   7,   7 ]         PPI::Token::Structure    ';'
+[    2,   8,   8 ]     PPI::Token::Whitespace   '\n'
+[    3,   1,   1 ]     PPI::Token::Whitespace   '\n'
+END_EXPECTED_FOO
+    );
+
+    _test($source, \%expected, 'Simple multiple namespaces: non-default followed by default.');
 } # end scope block
 
 
@@ -642,6 +697,201 @@ END_EXPECTED_FOO
 } # end scope block
 
 
+{
+    my $source = <<'END_SOURCE';
+given (0) {
+    package Foo;
+    when (1) {
+        package main;
+    }
+    when (2) {
+        package main;
+    }
+    default {
+        package main;
+        while (3) {
+            package Foo;
+            package Bar;
+            package Foo;
+            package main;
+            foreach (4) {
+                package Foo;
+            }
+        }
+    }
+}
+END_SOURCE
+
+    my %expected = (
+        main => [
+<<'END_EXPECTED_MAIN',
+                    PPI::Document::Fragment
+                        PPI::Statement::Given
+[    1,   1,   1 ]         PPI::Token::Word     'given'
+[    1,   6,   6 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Given   ( ... )
+                                PPI::Statement::Expression
+[    1,   8,   8 ]                 PPI::Token::Number   '0'
+[    1,  10,  10 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[    1,  12,  12 ]             PPI::Token::Whitespace   '\n'
+[    2,   1,   1 ]             PPI::Token::Whitespace   '    '
+[   21,   2,   2 ]     PPI::Token::Whitespace   '\n'
+END_EXPECTED_MAIN
+<<'END_EXPECTED_MAIN',
+                    PPI::Document::Fragment
+                        PPI::Statement::Package
+[    4,   9,   9 ]         PPI::Token::Word     'package'
+[    4,  16,  16 ]         PPI::Token::Whitespace   ' '
+[    4,  17,  17 ]         PPI::Token::Word     'main'
+[    4,  21,  21 ]         PPI::Token::Structure    ';'
+[    4,  22,  22 ]     PPI::Token::Whitespace   '\n'
+[    5,   1,   1 ]     PPI::Token::Whitespace   '    '
+END_EXPECTED_MAIN
+<<'END_EXPECTED_MAIN',
+                    PPI::Document::Fragment
+                        PPI::Statement::Package
+[    7,   9,   9 ]         PPI::Token::Word     'package'
+[    7,  16,  16 ]         PPI::Token::Whitespace   ' '
+[    7,  17,  17 ]         PPI::Token::Word     'main'
+[    7,  21,  21 ]         PPI::Token::Structure    ';'
+[    7,  22,  22 ]     PPI::Token::Whitespace   '\n'
+[    8,   1,   1 ]     PPI::Token::Whitespace   '    '
+END_EXPECTED_MAIN
+<<'END_EXPECTED_MAIN',
+                    PPI::Document::Fragment
+                        PPI::Statement::Package
+[   10,   9,   9 ]         PPI::Token::Word     'package'
+[   10,  16,  16 ]         PPI::Token::Whitespace   ' '
+[   10,  17,  17 ]         PPI::Token::Word     'main'
+[   10,  21,  21 ]         PPI::Token::Structure    ';'
+[   10,  22,  22 ]     PPI::Token::Whitespace   '\n'
+[   11,   1,   1 ]     PPI::Token::Whitespace   '        '
+                        PPI::Statement::Compound
+[   11,   9,   9 ]         PPI::Token::Word     'while'
+[   11,  14,  14 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Condition   ( ... )
+                                PPI::Statement::Expression
+[   11,  16,  16 ]                 PPI::Token::Number   '3'
+[   11,  18,  18 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[   11,  20,  20 ]             PPI::Token::Whitespace   '\n'
+[   12,   1,   1 ]             PPI::Token::Whitespace   '            '
+                                PPI::Statement::Package
+[   15,  13,  13 ]                 PPI::Token::Word     'package'
+[   15,  20,  20 ]                 PPI::Token::Whitespace   ' '
+[   15,  21,  21 ]                 PPI::Token::Word     'main'
+[   15,  25,  25 ]                 PPI::Token::Structure    ';'
+[   15,  26,  26 ]             PPI::Token::Whitespace   '\n'
+[   16,   1,   1 ]             PPI::Token::Whitespace   '            '
+                                PPI::Statement::Compound
+[   16,  13,  13 ]                 PPI::Token::Word     'foreach'
+[   16,  20,  20 ]                 PPI::Token::Whitespace   ' '
+                                    PPI::Structure::List    ( ... )
+                                        PPI::Statement
+[   16,  22,  22 ]                         PPI::Token::Number   '4'
+[   16,  24,  24 ]                 PPI::Token::Whitespace   ' '
+                                    PPI::Structure::Block   { ... }
+[   16,  26,  26 ]                     PPI::Token::Whitespace   '\n'
+[   17,   1,   1 ]                     PPI::Token::Whitespace   '                '
+[   18,  14,  14 ]             PPI::Token::Whitespace   '\n'
+[   19,   1,   1 ]             PPI::Token::Whitespace   '        '
+[   19,  10,  10 ]     PPI::Token::Whitespace   '\n'
+[   20,   1,   1 ]     PPI::Token::Whitespace   '    '
+END_EXPECTED_MAIN
+        ],
+
+        Foo => [
+<<'END_EXPECTED_FOO',
+                    PPI::Document::Fragment
+                        PPI::Statement::Package
+[    2,   5,   5 ]         PPI::Token::Word     'package'
+[    2,  12,  12 ]         PPI::Token::Whitespace   ' '
+[    2,  13,  13 ]         PPI::Token::Word     'Foo'
+[    2,  16,  16 ]         PPI::Token::Structure    ';'
+[    2,  17,  17 ]     PPI::Token::Whitespace   '\n'
+[    3,   1,   1 ]     PPI::Token::Whitespace   '    '
+                        PPI::Statement::When
+[    3,   5,   5 ]         PPI::Token::Word     'when'
+[    3,   9,   9 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::When    ( ... )
+                                PPI::Statement::Expression
+[    3,  11,  11 ]                 PPI::Token::Number   '1'
+[    3,  13,  13 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[    3,  15,  15 ]             PPI::Token::Whitespace   '\n'
+[    4,   1,   1 ]             PPI::Token::Whitespace   '        '
+[    5,   6,   6 ]     PPI::Token::Whitespace   '\n'
+[    6,   1,   1 ]     PPI::Token::Whitespace   '    '
+                        PPI::Statement::When
+[    6,   5,   5 ]         PPI::Token::Word     'when'
+[    6,   9,   9 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::When    ( ... )
+                                PPI::Statement::Expression
+[    6,  11,  11 ]                 PPI::Token::Number   '2'
+[    6,  13,  13 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[    6,  15,  15 ]             PPI::Token::Whitespace   '\n'
+[    7,   1,   1 ]             PPI::Token::Whitespace   '        '
+[    8,   6,   6 ]     PPI::Token::Whitespace   '\n'
+[    9,   1,   1 ]     PPI::Token::Whitespace   '    '
+                        PPI::Statement::When
+[    9,   5,   5 ]         PPI::Token::Word     'default'
+[    9,  12,  12 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[    9,  14,  14 ]             PPI::Token::Whitespace   '\n'
+[   10,   1,   1 ]             PPI::Token::Whitespace   '        '
+[   20,   6,   6 ]     PPI::Token::Whitespace   '\n'
+END_EXPECTED_FOO
+<<'END_EXPECTED_FOO',
+                    PPI::Document::Fragment
+                        PPI::Statement::Package
+[   12,  13,  13 ]         PPI::Token::Word     'package'
+[   12,  20,  20 ]         PPI::Token::Whitespace   ' '
+[   12,  21,  21 ]         PPI::Token::Word     'Foo'
+[   12,  24,  24 ]         PPI::Token::Structure    ';'
+[   12,  25,  25 ]     PPI::Token::Whitespace   '\n'
+[   13,   1,   1 ]     PPI::Token::Whitespace   '            '
+                        PPI::Statement::Package
+[   14,  13,  13 ]         PPI::Token::Word     'package'
+[   14,  20,  20 ]         PPI::Token::Whitespace   ' '
+[   14,  21,  21 ]         PPI::Token::Word     'Foo'
+[   14,  24,  24 ]         PPI::Token::Structure    ';'
+[   14,  25,  25 ]     PPI::Token::Whitespace   '\n'
+[   15,   1,   1 ]     PPI::Token::Whitespace   '            '
+END_EXPECTED_FOO
+<<'END_EXPECTED_FOO',
+                    PPI::Document::Fragment
+                        PPI::Statement::Package
+[   17,  17,  17 ]         PPI::Token::Word     'package'
+[   17,  24,  24 ]         PPI::Token::Whitespace   ' '
+[   17,  25,  25 ]         PPI::Token::Word     'Foo'
+[   17,  28,  28 ]         PPI::Token::Structure    ';'
+[   17,  29,  29 ]     PPI::Token::Whitespace   '\n'
+[   18,   1,   1 ]     PPI::Token::Whitespace   '            '
+END_EXPECTED_FOO
+        ],
+
+        Bar => [ <<'END_EXPECTED_BAR' ],
+                    PPI::Document::Fragment
+                        PPI::Statement::Package
+[   13,  13,  13 ]         PPI::Token::Word     'package'
+[   13,  20,  20 ]         PPI::Token::Whitespace   ' '
+[   13,  21,  21 ]         PPI::Token::Word     'Bar'
+[   13,  24,  24 ]         PPI::Token::Structure    ';'
+[   13,  25,  25 ]     PPI::Token::Whitespace   '\n'
+[   14,   1,   1 ]     PPI::Token::Whitespace   '            '
+END_EXPECTED_BAR
+    );
+
+    _test(
+        $source,
+        \%expected,
+        'Heavilly nested namespaces.',
+    );
+} # end scope block
+
+
 sub _test {
     my ($source, $expected_ref, $test_name) = @_;
 
@@ -665,9 +915,13 @@ sub _test {
             ];
     } # end while
 
-use Data::Dumper::Names;
     cmp_deeply(\%got_expanded, \%expanded_expected, $test_name)
-or diag Dumper(\%got_expanded, \%expanded_expected);
+        or diag(
+            Data::Dumper->Dump(
+                [\%got_expanded, \%expanded_expected],
+                [ qw<got_expanded expanded_expected> ],
+            )
+        );
 
     return;
 } # end _test()
