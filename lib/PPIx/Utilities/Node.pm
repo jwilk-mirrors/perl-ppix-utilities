@@ -20,13 +20,14 @@ Readonly::Array our @EXPORT_OK => qw<
 >;
 
 
+use 5.010;
 sub split_ppi_node_by_namespace {
     my ($node) = @_;
 
     # Ensure we don't screw up the original.
     $node = $node->clone();
 
-    # We want to make sure that we have locations prior to things are split
+    # We want to make sure that we have locations prior to things being split
     # up, if we can.
     eval { $node->location(); };
 
@@ -35,28 +36,9 @@ sub split_ppi_node_by_namespace {
     } # end if
 
     my %nodes_by_namespace;
-    my $namespace = 'main';
-    my $fragment;
-    foreach my $child ( $node->clone()->children() ) {
-        if ( $child->isa('PPI::Statement::Package') ) {
-            if ($fragment) {
-                push @{ $nodes_by_namespace{$namespace} }, $fragment;
-
-                undef $fragment;
-            } # end if
-
-            $namespace = $child->namespace();
-        } # end if
-
-        $fragment ||= PPI::Document::Fragment->new();
-        # Need to fix these to use exceptions.  Thankfully the P::C tests will
-        # insist that this happens.
-        $child->remove() or die 'Could not remove child from parent.';
-        $fragment->add_element($child) or die 'Could not add child to fragment.';
-    } # end if
-    if ($fragment) {
-        push @{ $nodes_by_namespace{$namespace} }, $fragment;
-    } # end if
+    _split_ppi_node_by_namespace_recursive(
+        $node, 'main', undef, \%nodes_by_namespace,
+    );
 
     return \%nodes_by_namespace;
 } # end split_ppi_node_by_namespace()
@@ -88,6 +70,68 @@ sub _split_ppi_node_by_namespace_single {
 
     return;
 } # end _split_ppi_node_by_namespace_single()
+
+
+sub _split_ppi_node_by_namespace_recursive {
+    my ($node, $namespace, $fragment, $nodes_by_namespace) = @_;
+
+    foreach my $child ( $node->children() ) {
+        if ( $child->isa('PPI::Statement::Package') ) {
+            if ($fragment) {
+               _push_fragment($nodes_by_namespace, $namespace, $fragment);
+
+                undef $fragment;
+            } # end if
+
+            $namespace = $child->namespace();
+        } elsif ( $child->isa('PPI::Statement::Compound') ) {
+            my $block;
+            my @components = $child->children();
+            while (not $block and my $component = shift @components) {
+                if ( $component->isa('PPI::Structure::Block') ) {
+                    $block = $component;
+                } # end if
+            } # end while
+
+            if ($block) {
+                _split_ppi_node_by_namespace_recursive(
+                    $block, $namespace, $fragment, $nodes_by_namespace,
+                );
+            } # end if
+        } # end if
+
+        $fragment ||= PPI::Document::Fragment->new();
+# Need to fix these to use exceptions.  Thankfully the P::C tests will
+# insist that this happens.
+#
+# Need to not do this for the block in test 4.
+        $child->remove() or die 'Could not remove child from parent.';
+        $fragment->add_element($child) or die 'Could not add child to fragment.';
+    } # end if
+
+    if ($fragment) {
+       _push_fragment($nodes_by_namespace, $namespace, $fragment);
+    } # end if
+
+    return;
+} # end _split_ppi_node_by_namespace_recursive()
+
+
+# Due to $fragment being passed into recursive calls to
+# _split_ppi_node_by_namespace_recursive(), we can end up attempting to put
+# the same fragment into a namespace's nodes multiple times.
+sub _push_fragment {
+    my ($nodes_by_namespace, $namespace, $fragment) = @_;
+
+    my $nodes = $nodes_by_namespace->{$namespace} ||= [];
+
+    if (not @{$nodes} or refaddr $nodes->[-1] != refaddr $fragment) {
+        push @{$nodes}, $fragment;
+    } # end if
+
+    return;
+} # end _push_fragment()
+
 
 1;
 

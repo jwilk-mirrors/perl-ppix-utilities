@@ -17,7 +17,7 @@ use PPIx::Utilities::Node qw< split_ppi_node_by_namespace >;
 
 
 use Test::Deep qw< cmp_deeply >;
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 
 Readonly::Scalar my $DUMP_INDENT => 4;
@@ -122,6 +122,70 @@ END_EXPECTED_FOO
     );
 
     _test($source, \%expected, 'Simple multiple namespaces: default followed by non-default.');
+} # end scope block
+
+
+{
+    my $source = <<'END_SOURCE';
+$x = 1;
+
+{
+    package Foo;
+    $a = 17;
+}
+
+$y = 2;
+END_SOURCE
+
+    my %expected = (
+        main => [ <<'END_EXPECTED_MAIN' ],
+                    PPI::Document::Fragment
+                        PPI::Statement
+[    1,   1,   1 ]         PPI::Token::Symbol   '$x'
+[    1,   3,   3 ]         PPI::Token::Whitespace   ' '
+[    1,   4,   4 ]         PPI::Token::Operator     '='
+[    1,   5,   5 ]         PPI::Token::Whitespace   ' '
+[    1,   6,   6 ]         PPI::Token::Number   '1'
+[    1,   7,   7 ]         PPI::Token::Structure    ';'
+[    1,   8,   8 ]     PPI::Token::Whitespace   '\n'
+[    2,   1,   1 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement::Compound
+                            PPI::Structure::Block   { ... }
+[    3,   2,   2 ]             PPI::Token::Whitespace   '\n'
+[    4,   1,   1 ]             PPI::Token::Whitespace   '    '
+[    6,   2,   2 ]     PPI::Token::Whitespace   '\n'
+[    7,   1,   1 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement
+[    8,   1,   1 ]         PPI::Token::Symbol   '$y'
+[    8,   3,   3 ]         PPI::Token::Whitespace   ' '
+[    8,   4,   4 ]         PPI::Token::Operator     '='
+[    8,   5,   5 ]         PPI::Token::Whitespace   ' '
+[    8,   6,   6 ]         PPI::Token::Number   '2'
+[    8,   7,   7 ]         PPI::Token::Structure    ';'
+[    8,   8,   8 ]     PPI::Token::Whitespace   '\n'
+END_EXPECTED_MAIN
+
+        Foo => [ <<'END_EXPECTED_FOO' ],
+                    PPI::Document::Fragment
+                        PPI::Statement::Package
+[    4,   5,   5 ]         PPI::Token::Word     'package'
+[    4,  12,  12 ]         PPI::Token::Whitespace   ' '
+[    4,  13,  13 ]         PPI::Token::Word     'Foo'
+[    4,  16,  16 ]         PPI::Token::Structure    ';'
+[    4,  17,  17 ]     PPI::Token::Whitespace   '\n'
+[    5,   1,   1 ]     PPI::Token::Whitespace   '    '
+                        PPI::Statement
+[    5,   5,   5 ]         PPI::Token::Symbol   '$a'
+[    5,   7,   7 ]         PPI::Token::Whitespace   ' '
+[    5,   8,   8 ]         PPI::Token::Operator     '='
+[    5,   9,   9 ]         PPI::Token::Whitespace   ' '
+[    5,  10,  10 ]         PPI::Token::Number   '17'
+[    5,  12,  12 ]         PPI::Token::Structure    ';'
+[    5,  13,  13 ]     PPI::Token::Whitespace   '\n'
+END_EXPECTED_FOO
+    );
+
+    _test($source, \%expected, 'Single lexically scoped namespace.');
 } # end scope block
 
 
