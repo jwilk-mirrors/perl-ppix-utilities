@@ -94,7 +94,11 @@ sub _split_ppi_node_by_namespace_in_lexical_scope {
             } # end if
 
             $namespace = $child->namespace();
-        } elsif ( $child->isa('PPI::Statement::Compound') ) {
+        } elsif (
+                $child->isa('PPI::Statement::Compound')
+            or  $child->isa('PPI::Statement::Given')
+            or  $child->isa('PPI::Statement::When')
+        ) {
             my $block;
             my @components = $child->children();
             while (not $block and my $component = shift @components) {

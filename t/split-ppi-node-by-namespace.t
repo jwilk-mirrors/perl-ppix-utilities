@@ -17,7 +17,7 @@ use PPIx::Utilities::Node qw< split_ppi_node_by_namespace >;
 
 
 use Test::Deep qw< cmp_deeply >;
-use Test::More tests => 5;
+use Test::More tests => 8;
 
 
 Readonly::Scalar my $DUMP_INDENT => 4;
@@ -26,8 +26,15 @@ Readonly::Scalar my $DUMP_INDENT => 4;
 {
     my $source = <<'END_SOURCE';
 package Foo;
-
 $x = 1;
+while (1) { $y = 2 }
+until (1) { $z = 3 }
+if (1) { $w = 4 }
+unless (1) { $v = 5 }
+for (1) { $u = 6 }
+foreach (1) { $t = 7 }
+given (1) { $s = 8 }
+when (1) { $r = 9 }
 END_SOURCE
 
     my %expected = (
@@ -39,15 +46,150 @@ END_SOURCE
 [    1,   9,   9 ]         PPI::Token::Word     'Foo'
 [    1,  12,  12 ]         PPI::Token::Structure    ';'
 [    1,  13,  13 ]     PPI::Token::Whitespace   '\n'
-[    2,   1,   1 ]     PPI::Token::Whitespace   '\n'
                         PPI::Statement
-[    3,   1,   1 ]         PPI::Token::Symbol   '$x'
-[    3,   3,   3 ]         PPI::Token::Whitespace   ' '
-[    3,   4,   4 ]         PPI::Token::Operator     '='
-[    3,   5,   5 ]         PPI::Token::Whitespace   ' '
-[    3,   6,   6 ]         PPI::Token::Number   '1'
-[    3,   7,   7 ]         PPI::Token::Structure    ';'
-[    3,   8,   8 ]     PPI::Token::Whitespace   '\n'
+[    2,   1,   1 ]         PPI::Token::Symbol   '$x'
+[    2,   3,   3 ]         PPI::Token::Whitespace   ' '
+[    2,   4,   4 ]         PPI::Token::Operator     '='
+[    2,   5,   5 ]         PPI::Token::Whitespace   ' '
+[    2,   6,   6 ]         PPI::Token::Number   '1'
+[    2,   7,   7 ]         PPI::Token::Structure    ';'
+[    2,   8,   8 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement::Compound
+[    3,   1,   1 ]         PPI::Token::Word     'while'
+[    3,   6,   6 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Condition   ( ... )
+                                PPI::Statement::Expression
+[    3,   8,   8 ]                 PPI::Token::Number   '1'
+[    3,  10,  10 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[    3,  12,  12 ]             PPI::Token::Whitespace   ' '
+                                PPI::Statement
+[    3,  13,  13 ]                 PPI::Token::Symbol   '$y'
+[    3,  15,  15 ]                 PPI::Token::Whitespace   ' '
+[    3,  16,  16 ]                 PPI::Token::Operator     '='
+[    3,  17,  17 ]                 PPI::Token::Whitespace   ' '
+[    3,  18,  18 ]                 PPI::Token::Number   '2'
+[    3,  19,  19 ]             PPI::Token::Whitespace   ' '
+[    3,  21,  21 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement::Compound
+[    4,   1,   1 ]         PPI::Token::Word     'until'
+[    4,   6,   6 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Condition   ( ... )
+                                PPI::Statement::Expression
+[    4,   8,   8 ]                 PPI::Token::Number   '1'
+[    4,  10,  10 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[    4,  12,  12 ]             PPI::Token::Whitespace   ' '
+                                PPI::Statement
+[    4,  13,  13 ]                 PPI::Token::Symbol   '$z'
+[    4,  15,  15 ]                 PPI::Token::Whitespace   ' '
+[    4,  16,  16 ]                 PPI::Token::Operator     '='
+[    4,  17,  17 ]                 PPI::Token::Whitespace   ' '
+[    4,  18,  18 ]                 PPI::Token::Number   '3'
+[    4,  19,  19 ]             PPI::Token::Whitespace   ' '
+[    4,  21,  21 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement::Compound
+[    5,   1,   1 ]         PPI::Token::Word     'if'
+[    5,   3,   3 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Condition   ( ... )
+                                PPI::Statement::Expression
+[    5,   5,   5 ]                 PPI::Token::Number   '1'
+[    5,   7,   7 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[    5,   9,   9 ]             PPI::Token::Whitespace   ' '
+                                PPI::Statement
+[    5,  10,  10 ]                 PPI::Token::Symbol   '$w'
+[    5,  12,  12 ]                 PPI::Token::Whitespace   ' '
+[    5,  13,  13 ]                 PPI::Token::Operator     '='
+[    5,  14,  14 ]                 PPI::Token::Whitespace   ' '
+[    5,  15,  15 ]                 PPI::Token::Number   '4'
+[    5,  16,  16 ]             PPI::Token::Whitespace   ' '
+[    5,  18,  18 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement::Compound
+[    6,   1,   1 ]         PPI::Token::Word     'unless'
+[    6,   7,   7 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Condition   ( ... )
+                                PPI::Statement::Expression
+[    6,   9,   9 ]                 PPI::Token::Number   '1'
+[    6,  11,  11 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[    6,  13,  13 ]             PPI::Token::Whitespace   ' '
+                                PPI::Statement
+[    6,  14,  14 ]                 PPI::Token::Symbol   '$v'
+[    6,  16,  16 ]                 PPI::Token::Whitespace   ' '
+[    6,  17,  17 ]                 PPI::Token::Operator     '='
+[    6,  18,  18 ]                 PPI::Token::Whitespace   ' '
+[    6,  19,  19 ]                 PPI::Token::Number   '5'
+[    6,  20,  20 ]             PPI::Token::Whitespace   ' '
+[    6,  22,  22 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement::Compound
+[    7,   1,   1 ]         PPI::Token::Word     'for'
+[    7,   4,   4 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::List    ( ... )
+                                PPI::Statement
+[    7,   6,   6 ]                 PPI::Token::Number   '1'
+[    7,   8,   8 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[    7,  10,  10 ]             PPI::Token::Whitespace   ' '
+                                PPI::Statement
+[    7,  11,  11 ]                 PPI::Token::Symbol   '$u'
+[    7,  13,  13 ]                 PPI::Token::Whitespace   ' '
+[    7,  14,  14 ]                 PPI::Token::Operator     '='
+[    7,  15,  15 ]                 PPI::Token::Whitespace   ' '
+[    7,  16,  16 ]                 PPI::Token::Number   '6'
+[    7,  17,  17 ]             PPI::Token::Whitespace   ' '
+[    7,  19,  19 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement::Compound
+[    8,   1,   1 ]         PPI::Token::Word     'foreach'
+[    8,   8,   8 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::List    ( ... )
+                                PPI::Statement
+[    8,  10,  10 ]                 PPI::Token::Number   '1'
+[    8,  12,  12 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[    8,  14,  14 ]             PPI::Token::Whitespace   ' '
+                                PPI::Statement
+[    8,  15,  15 ]                 PPI::Token::Symbol   '$t'
+[    8,  17,  17 ]                 PPI::Token::Whitespace   ' '
+[    8,  18,  18 ]                 PPI::Token::Operator     '='
+[    8,  19,  19 ]                 PPI::Token::Whitespace   ' '
+[    8,  20,  20 ]                 PPI::Token::Number   '7'
+[    8,  21,  21 ]             PPI::Token::Whitespace   ' '
+[    8,  23,  23 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement::Given
+[    9,   1,   1 ]         PPI::Token::Word     'given'
+[    9,   6,   6 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Given   ( ... )
+                                PPI::Statement::Expression
+[    9,   8,   8 ]                 PPI::Token::Number   '1'
+[    9,  10,  10 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[    9,  12,  12 ]             PPI::Token::Whitespace   ' '
+                                PPI::Statement
+[    9,  13,  13 ]                 PPI::Token::Symbol   '$s'
+[    9,  15,  15 ]                 PPI::Token::Whitespace   ' '
+[    9,  16,  16 ]                 PPI::Token::Operator     '='
+[    9,  17,  17 ]                 PPI::Token::Whitespace   ' '
+[    9,  18,  18 ]                 PPI::Token::Number   '8'
+[    9,  19,  19 ]             PPI::Token::Whitespace   ' '
+[    9,  21,  21 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement::When
+[   10,   1,   1 ]         PPI::Token::Word     'when'
+[   10,   5,   5 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::When    ( ... )
+                                PPI::Statement::Expression
+[   10,   7,   7 ]                 PPI::Token::Number   '1'
+[   10,   9,   9 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[   10,  11,  11 ]             PPI::Token::Whitespace   ' '
+                                PPI::Statement
+[   10,  12,  12 ]                 PPI::Token::Symbol   '$r'
+[   10,  14,  14 ]                 PPI::Token::Whitespace   ' '
+[   10,  15,  15 ]                 PPI::Token::Operator     '='
+[   10,  16,  16 ]                 PPI::Token::Whitespace   ' '
+[   10,  17,  17 ]                 PPI::Token::Number   '9'
+[   10,  18,  18 ]             PPI::Token::Whitespace   ' '
+[   10,  20,  20 ]     PPI::Token::Whitespace   '\n'
 END_EXPECTED
     );
 
@@ -280,7 +422,223 @@ END_EXPECTED_MAIN
 END_EXPECTED_FOO
     );
 
-    _test($source, \%expected, 'Single lexically scoped namespace.');
+    _test($source, \%expected, 'Single lexically scoped namespace: scope block.');
+} # end scope block
+
+
+{
+    my $source = <<'END_SOURCE';
+$x = 1;
+
+foreach qw< l m n > {
+    package Foo;
+    $a = 17;
+}
+
+$y = 2;
+END_SOURCE
+
+    my %expected = (
+        main => [ <<'END_EXPECTED_MAIN' ],
+                    PPI::Document::Fragment
+                        PPI::Statement
+[    1,   1,   1 ]         PPI::Token::Symbol   '$x'
+[    1,   3,   3 ]         PPI::Token::Whitespace   ' '
+[    1,   4,   4 ]         PPI::Token::Operator     '='
+[    1,   5,   5 ]         PPI::Token::Whitespace   ' '
+[    1,   6,   6 ]         PPI::Token::Number   '1'
+[    1,   7,   7 ]         PPI::Token::Structure    ';'
+[    1,   8,   8 ]     PPI::Token::Whitespace   '\n'
+[    2,   1,   1 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement::Compound
+[    3,   1,   1 ]         PPI::Token::Word     'foreach'
+[    3,   8,   8 ]         PPI::Token::Whitespace   ' '
+[    3,   9,   9 ]         PPI::Token::QuoteLike::Words     'qw< l m n >'
+[    3,  20,  20 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[    3,  22,  22 ]             PPI::Token::Whitespace   '\n'
+[    4,   1,   1 ]             PPI::Token::Whitespace   '    '
+[    6,   2,   2 ]     PPI::Token::Whitespace   '\n'
+[    7,   1,   1 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement
+[    8,   1,   1 ]         PPI::Token::Symbol   '$y'
+[    8,   3,   3 ]         PPI::Token::Whitespace   ' '
+[    8,   4,   4 ]         PPI::Token::Operator     '='
+[    8,   5,   5 ]         PPI::Token::Whitespace   ' '
+[    8,   6,   6 ]         PPI::Token::Number   '2'
+[    8,   7,   7 ]         PPI::Token::Structure    ';'
+[    8,   8,   8 ]     PPI::Token::Whitespace   '\n'
+END_EXPECTED_MAIN
+
+        Foo => [ <<'END_EXPECTED_FOO' ],
+                    PPI::Document::Fragment
+                        PPI::Statement::Package
+[    4,   5,   5 ]         PPI::Token::Word     'package'
+[    4,  12,  12 ]         PPI::Token::Whitespace   ' '
+[    4,  13,  13 ]         PPI::Token::Word     'Foo'
+[    4,  16,  16 ]         PPI::Token::Structure    ';'
+[    4,  17,  17 ]     PPI::Token::Whitespace   '\n'
+[    5,   1,   1 ]     PPI::Token::Whitespace   '    '
+                        PPI::Statement
+[    5,   5,   5 ]         PPI::Token::Symbol   '$a'
+[    5,   7,   7 ]         PPI::Token::Whitespace   ' '
+[    5,   8,   8 ]         PPI::Token::Operator     '='
+[    5,   9,   9 ]         PPI::Token::Whitespace   ' '
+[    5,  10,  10 ]         PPI::Token::Number   '17'
+[    5,  12,  12 ]         PPI::Token::Structure    ';'
+[    5,  13,  13 ]     PPI::Token::Whitespace   '\n'
+END_EXPECTED_FOO
+    );
+
+    _test(
+        $source,
+        \%expected,
+        'Single lexically scoped namespace: foreach loop.',
+    );
+} # end scope block
+
+
+{
+    my $source = <<'END_SOURCE';
+$x = 1;
+
+given qw< l m n > {
+    package Foo;
+    $a = 17;
+}
+
+$y = 2;
+END_SOURCE
+
+    my %expected = (
+        main => [ <<'END_EXPECTED_MAIN' ],
+                    PPI::Document::Fragment
+                        PPI::Statement
+[    1,   1,   1 ]         PPI::Token::Symbol   '$x'
+[    1,   3,   3 ]         PPI::Token::Whitespace   ' '
+[    1,   4,   4 ]         PPI::Token::Operator     '='
+[    1,   5,   5 ]         PPI::Token::Whitespace   ' '
+[    1,   6,   6 ]         PPI::Token::Number   '1'
+[    1,   7,   7 ]         PPI::Token::Structure    ';'
+[    1,   8,   8 ]     PPI::Token::Whitespace   '\n'
+[    2,   1,   1 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement::Given
+[    3,   1,   1 ]         PPI::Token::Word     'given'
+[    3,   6,   6 ]         PPI::Token::Whitespace   ' '
+[    3,   7,   7 ]         PPI::Token::QuoteLike::Words     'qw< l m n >'
+[    3,  18,  18 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[    3,  20,  20 ]             PPI::Token::Whitespace   '\n'
+[    4,   1,   1 ]             PPI::Token::Whitespace   '    '
+[    6,   2,   2 ]     PPI::Token::Whitespace   '\n'
+[    7,   1,   1 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement
+[    8,   1,   1 ]         PPI::Token::Symbol   '$y'
+[    8,   3,   3 ]         PPI::Token::Whitespace   ' '
+[    8,   4,   4 ]         PPI::Token::Operator     '='
+[    8,   5,   5 ]         PPI::Token::Whitespace   ' '
+[    8,   6,   6 ]         PPI::Token::Number   '2'
+[    8,   7,   7 ]         PPI::Token::Structure    ';'
+[    8,   8,   8 ]     PPI::Token::Whitespace   '\n'
+END_EXPECTED_MAIN
+
+        Foo => [ <<'END_EXPECTED_FOO' ],
+                    PPI::Document::Fragment
+                        PPI::Statement::Package
+[    4,   5,   5 ]         PPI::Token::Word     'package'
+[    4,  12,  12 ]         PPI::Token::Whitespace   ' '
+[    4,  13,  13 ]         PPI::Token::Word     'Foo'
+[    4,  16,  16 ]         PPI::Token::Structure    ';'
+[    4,  17,  17 ]     PPI::Token::Whitespace   '\n'
+[    5,   1,   1 ]     PPI::Token::Whitespace   '    '
+                        PPI::Statement
+[    5,   5,   5 ]         PPI::Token::Symbol   '$a'
+[    5,   7,   7 ]         PPI::Token::Whitespace   ' '
+[    5,   8,   8 ]         PPI::Token::Operator     '='
+[    5,   9,   9 ]         PPI::Token::Whitespace   ' '
+[    5,  10,  10 ]         PPI::Token::Number   '17'
+[    5,  12,  12 ]         PPI::Token::Structure    ';'
+[    5,  13,  13 ]     PPI::Token::Whitespace   '\n'
+END_EXPECTED_FOO
+    );
+
+    _test(
+        $source,
+        \%expected,
+        'Single lexically scoped namespace: given.',
+    );
+} # end scope block
+
+
+{
+    my $source = <<'END_SOURCE';
+$x = 1;
+
+when qw< l m n > {
+    package Foo;
+    $a = 17;
+}
+
+$y = 2;
+END_SOURCE
+
+    my %expected = (
+        main => [ <<'END_EXPECTED_MAIN' ],
+                    PPI::Document::Fragment
+                        PPI::Statement
+[    1,   1,   1 ]         PPI::Token::Symbol   '$x'
+[    1,   3,   3 ]         PPI::Token::Whitespace   ' '
+[    1,   4,   4 ]         PPI::Token::Operator     '='
+[    1,   5,   5 ]         PPI::Token::Whitespace   ' '
+[    1,   6,   6 ]         PPI::Token::Number   '1'
+[    1,   7,   7 ]         PPI::Token::Structure    ';'
+[    1,   8,   8 ]     PPI::Token::Whitespace   '\n'
+[    2,   1,   1 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement::When
+[    3,   1,   1 ]         PPI::Token::Word     'when'
+[    3,   5,   5 ]         PPI::Token::Whitespace   ' '
+[    3,   6,   6 ]         PPI::Token::QuoteLike::Words     'qw< l m n >'
+[    3,  17,  17 ]         PPI::Token::Whitespace   ' '
+                            PPI::Structure::Block   { ... }
+[    3,  19,  19 ]             PPI::Token::Whitespace   '\n'
+[    4,   1,   1 ]             PPI::Token::Whitespace   '    '
+[    6,   2,   2 ]     PPI::Token::Whitespace   '\n'
+[    7,   1,   1 ]     PPI::Token::Whitespace   '\n'
+                        PPI::Statement
+[    8,   1,   1 ]         PPI::Token::Symbol   '$y'
+[    8,   3,   3 ]         PPI::Token::Whitespace   ' '
+[    8,   4,   4 ]         PPI::Token::Operator     '='
+[    8,   5,   5 ]         PPI::Token::Whitespace   ' '
+[    8,   6,   6 ]         PPI::Token::Number   '2'
+[    8,   7,   7 ]         PPI::Token::Structure    ';'
+[    8,   8,   8 ]     PPI::Token::Whitespace   '\n'
+END_EXPECTED_MAIN
+
+        Foo => [ <<'END_EXPECTED_FOO' ],
+                    PPI::Document::Fragment
+                        PPI::Statement::Package
+[    4,   5,   5 ]         PPI::Token::Word     'package'
+[    4,  12,  12 ]         PPI::Token::Whitespace   ' '
+[    4,  13,  13 ]         PPI::Token::Word     'Foo'
+[    4,  16,  16 ]         PPI::Token::Structure    ';'
+[    4,  17,  17 ]     PPI::Token::Whitespace   '\n'
+[    5,   1,   1 ]     PPI::Token::Whitespace   '    '
+                        PPI::Statement
+[    5,   5,   5 ]         PPI::Token::Symbol   '$a'
+[    5,   7,   7 ]         PPI::Token::Whitespace   ' '
+[    5,   8,   8 ]         PPI::Token::Operator     '='
+[    5,   9,   9 ]         PPI::Token::Whitespace   ' '
+[    5,  10,  10 ]         PPI::Token::Number   '17'
+[    5,  12,  12 ]         PPI::Token::Structure    ';'
+[    5,  13,  13 ]     PPI::Token::Whitespace   '\n'
+END_EXPECTED_FOO
+    );
+
+    _test(
+        $source,
+        \%expected,
+        'Single lexically scoped namespace: when.',
+    );
 } # end scope block
 
 
