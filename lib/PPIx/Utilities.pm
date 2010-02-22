@@ -57,7 +57,7 @@ Elliot Shank  C<< <perl@galumph.com> >>
 
 =head1 COPYRIGHT
 
-Copyright (c)2009, Elliot Shank C<< <perl@galumph.com> >>.
+Copyright (c)2009-2010, Elliot Shank C<< <perl@galumph.com> >>.
 
 This module is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself. See L<perlartistic>.

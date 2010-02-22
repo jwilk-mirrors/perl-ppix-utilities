@@ -16,12 +16,7 @@ use Test::More;
 use Test::Pod::Coverage;
 
 my @trusted_methods = qw<
-    initialize_if_enabled
-    violates
-    applies_to
-    default_themes
-    default_severity
-    supported_parameters
+    description
 >;
 
 my $method_string = join q< | >, @trusted_methods;

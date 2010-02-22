@@ -15,14 +15,6 @@ use Module::Build;
 
 my $class = Module::Build->subclass( code => <<'END_SUBCLASS' );
 
-    sub ACTION_test {
-        my ($self) = @_;
-
-        $self->depends_on('manifest');
-
-        return $self->SUPER::ACTION_test();
-    }
-
     sub ACTION_authortest {
         my ($self) = @_;
 

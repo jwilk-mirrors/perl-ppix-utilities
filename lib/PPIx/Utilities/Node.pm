@@ -13,6 +13,9 @@ use PPI::Document::Fragment qw< >;
 use Scalar::Util            qw< refaddr >;
 
 
+use PPIx::Utilities::Exception::Bug qw< >;
+
+
 use base 'Exporter';
 
 Readonly::Array our @EXPORT_OK => qw<
@@ -27,8 +30,8 @@ sub split_ppi_node_by_namespace {
     $node = $node->clone();
 
     # We want to make sure that we have locations prior to things being split
-    # up, if we can.
-    eval { $node->location(); };
+    # up, if we can, but don't worry about it if we don't.
+    eval { $node->location(); }; ## no critic (RequireCheckingReturnValueOfEval)
 
     if ( my $single_namespace = _split_ppi_node_by_namespace_single($node) ) {
         return $single_namespace;
@@ -129,9 +132,14 @@ sub _split_ppi_node_by_namespace_in_lexical_scope {
         if ($initial_fragment_address != refaddr $fragment) {
             # Need to fix these to use exceptions.  Thankfully the P::C tests
             # will insist that this happens.
-            $child->remove() or die 'Could not remove child from parent.';
+            $child->remove()
+                or PPIx::Utilities::Exception::Bug->throw(
+                    'Could not remove child from parent.'
+                );
             $fragment->add_element($child)
-                or die 'Could not add child to fragment.';
+                or PPIx::Utilities::Exception::Bug->throw(
+                    'Could not add child to fragment.'
+                );
         } # end if
     } # end foreach
 
@@ -210,7 +218,7 @@ Nothing is exported by default.
 
 =head2 split_ppi_node_by_namespace($node)
 
-Returns the subtrees for each namespace in the node as a reference to a hash
+Returns the sub-trees for each namespace in the node as a reference to a hash
 of references to arrays of L<PPI::Node>s.  Say we've got the following code:
 
     #!perl
@@ -312,7 +320,7 @@ Elliot Shank  C<< <perl@galumph.com> >>
 
 =head1 COPYRIGHT
 
-Copyright (c)2009, Elliot Shank C<< <perl@galumph.com> >>.
+Copyright (c)2009-2010, Elliot Shank C<< <perl@galumph.com> >>.
 
 This module is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself. See L<perlartistic>.
