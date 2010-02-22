@@ -11,7 +11,7 @@ use 5.006001;
 use strict;
 use warnings;
 
-our $VERSION = '1.007';
+our $VERSION = '1.000';
 
 
 use Exception::Class (
@@ -34,6 +34,11 @@ __END__
 =head1 NAME
 
 PPIx::Utilities::Exception::Bug - A problem identified by L<PPIx::Utilities|PPIx::Utilities>.
+
+=head1 VERSION
+
+This document describes PPIx::Utilities::Exception::Bug version 1.0.0.
+
 
 =head1 DESCRIPTION
 
