@@ -55,7 +55,9 @@ my $builder = $class->new(
 
     requires            => {
         'base'                      => 0,
+        'Exception::Class'          => 0,
         'Exporter'                  => 0,
+        'PPI'                       => $ppi_version,
         'PPI::Document::Fragment'   => $ppi_version,
         'Readonly'                  => 0,
         'Scalar::Util'              => 0,
@@ -65,6 +67,7 @@ my $builder = $class->new(
     },
 
     build_requires      => {
+        'Data::Dumper'  => 0,
         'PPI::Document' => $ppi_version,
         'PPI::Dumper'   => $ppi_version,
         'Test::Deep'    => 0,
