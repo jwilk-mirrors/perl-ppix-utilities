@@ -9,8 +9,8 @@ our $VERSION = '1.000';
 use Readonly;
 
 
-use PPI::Document::Fragment qw< >;
-use Scalar::Util            qw< refaddr >;
+use PPI::Document::Fragment 1.208 qw< >;
+use Scalar::Util                  qw< refaddr >;
 
 
 use PPIx::Utilities::Exception::Bug qw< >;
@@ -183,7 +183,7 @@ __END__
 
 =head1 NAME
 
-PPIx::Utilities::Node - Extensions to L<PPI::Node>.
+PPIx::Utilities::Node - Extensions to L<PPI::Node|PPI::Node>.
 
 
 =head1 VERSION
@@ -208,7 +208,7 @@ This document describes PPIx::Utilities::Node version 1.0.0.
 
 =head1 DESCRIPTION
 
-This is a collection of functions for dealing with L<PPI::Node>s.
+This is a collection of functions for dealing with L<PPI::Node|PPI::Node>s.
 
 
 =head1 INTERFACE
@@ -219,7 +219,8 @@ Nothing is exported by default.
 =head2 split_ppi_node_by_namespace($node)
 
 Returns the sub-trees for each namespace in the node as a reference to a hash
-of references to arrays of L<PPI::Node>s.  Say we've got the following code:
+of references to arrays of L<PPI::Node|PPI::Node>s.  Say we've got the
+following code:
 
     #!perl
 
@@ -306,8 +307,6 @@ original code.)
 
 =head1 BUGS AND LIMITATIONS
 
-No bugs have been reported.
-
 Please report any bugs or feature requests to
 C<bug-ppix-utilities@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
@@ -322,30 +321,10 @@ Elliot Shank  C<< <perl@galumph.com> >>
 
 Copyright (c)2009-2010, Elliot Shank C<< <perl@galumph.com> >>.
 
-This module is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself. See L<perlartistic>.
+This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.  The full text of this license
+can be found in the LICENSE file included with this module.
 
-
-=head1 DISCLAIMER OF WARRANTY
-
-BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY FOR THE
-SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE
-STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE
-SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND
-PERFORMANCE OF THE SOFTWARE IS WITH YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE,
-YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR, OR CORRECTION.
-
-IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY
-COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR REDISTRIBUTE THE
-SOFTWARE AS PERMITTED BY THE ABOVE LICENSE, BE LIABLE TO YOU FOR DAMAGES,
-INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING
-OUT OF THE USE OR INABILITY TO USE THE SOFTWARE (INCLUDING BUT NOT LIMITED TO
-LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR
-THIRD PARTIES OR A FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER
-SOFTWARE), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGES.
 
 =cut
 
@@ -363,4 +342,4 @@ POSSIBILITY OF SUCH DAMAGES.
 #   indent-tabs-mode: nil
 #   c-indentation-style: bsd
 # End:
-# ex: set ts=8 sts=4 sw=4 tw=78 ft=perl expandtab :
+# ex: set ts=8 sts=4 sw=4 tw=78 ft=perl expandtab shiftround:

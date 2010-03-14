@@ -40,7 +40,7 @@ my $class = Module::Build->subclass( code => <<'END_SUBCLASS' );
 
 END_SUBCLASS
 
-my $ppi_version = '1.207_01';
+my $ppi_version = '1.208';
 
 my $builder = $class->new(
     module_name         => 'PPIx::Utilities',
