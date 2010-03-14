@@ -13,7 +13,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '1.000';
+our $VERSION = '1.000001';
 
 # No POD coverage due to complaints about builtins when using Fatal.
 use Test::Distribution ( distversion => 1, not => 'podcover' );

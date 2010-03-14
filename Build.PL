@@ -84,6 +84,10 @@ my $builder = $class->new(
             Repository  => 'http://guest@perlcritic.tigris.org/svn/perlcritic/trunk/distributions/PPIx-Utilities/',
             MailingList => 'http://perlcritic.tigris.org/servlets/SummarizeList?listName=users',
         },
+        no_index        => {
+            file        => [ ],
+            directory   => [ qw< t xt > ],
+        },
     },
 
     add_to_cleanup      => [

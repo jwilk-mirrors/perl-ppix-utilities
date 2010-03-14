@@ -4,7 +4,7 @@ use 5.006001;
 use strict;
 use warnings;
 
-our $VERSION = '1.000';
+our $VERSION = '1.000001';
 
 use Readonly;
 
@@ -188,7 +188,7 @@ PPIx::Utilities::Node - Extensions to L<PPI::Node|PPI::Node>.
 
 =head1 VERSION
 
-This document describes PPIx::Utilities::Node version 1.0.0.
+This document describes PPIx::Utilities::Node version 1.0.1.
 
 
 =head1 SYNOPSIS

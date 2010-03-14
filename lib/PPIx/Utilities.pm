@@ -4,7 +4,7 @@ use 5.006001;
 use strict;
 use warnings;
 
-our $VERSION = '1.000';
+our $VERSION = '1.000001';
 
 
 1;
@@ -18,7 +18,7 @@ PPIx::Utilities - Extensions to L<PPI>.
 
 =head1 VERSION
 
-This document describes PPIx::Utilities version 1.0.0.
+This document describes PPIx::Utilities version 1.0.1.
 
 
 =head1 SYNOPSIS
