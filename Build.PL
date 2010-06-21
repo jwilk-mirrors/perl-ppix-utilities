@@ -81,7 +81,7 @@ my $builder = $class->new(
     meta_merge          => {
         resources   => {
             license     => 'http://dev.perl.org/licenses/',
-            Repository  => 'http://guest@perlcritic.tigris.org/svn/perlcritic/trunk/distributions/PPIx-Utilities/',
+            repository  => 'http://guest@perlcritic.tigris.org/svn/perlcritic/trunk/distributions/PPIx-Utilities/',
             MailingList => 'http://perlcritic.tigris.org/servlets/SummarizeList?listName=users',
         },
         no_index        => {
