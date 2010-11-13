@@ -5,7 +5,7 @@ use 5.006001;
 use strict;
 use warnings;
 
-our $VERSION = '1.000001';
+our $VERSION = '1.001000';
 
 
 use Readonly;

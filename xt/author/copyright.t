@@ -16,7 +16,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '1.000001';
+our $VERSION = '1.001000';
 
 use File::Find;
 use File::Slurp;
