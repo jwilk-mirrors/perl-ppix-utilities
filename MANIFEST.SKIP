@@ -24,6 +24,7 @@ RCS
 ^blib
 ^MANIFEST\.SKIP$
 ^Makefile$
+^MYMETA.yml$
 ^cover_db
 ^nytprof
 ^pm_to_blib$
