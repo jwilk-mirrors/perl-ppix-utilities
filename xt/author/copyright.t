@@ -55,7 +55,7 @@ sub check_file {
                 |  .*/scripts/[^/]+  # programs
                 |  .*/script/[^/]+   # programs
                 |  .*/bin/[^/]+      # programs
-                |  .*\.(?:
+                |  .* [.] (?:
                             pl        # program ext
                         |   pm        # module ext
                         |   html      # doc ext

@@ -13,7 +13,7 @@ __END__
 
 =head1 NAME
 
-PPIx::Utilities - Extensions to L<PPI>.
+PPIx::Utilities - Extensions to L<PPI|PPI>.
 
 
 =head1 VERSION
@@ -29,11 +29,11 @@ distribution.
 
 =head1 DESCRIPTION
 
-This is a collection of functions for dealing with L<PPI> objects, many of
-which originated in L<Perl::Critic>.  They are organized into modules by the
-kind of PPI class they relate to, by replacing the "PPI" at the front of the
-module name with "PPIx::Utilities", e.g. functionality related to
-L<PPI::Node>s is in L<PPIx::Utilities::Node>.
+This is a collection of functions for dealing with L<PPI|PPI> objects, many of
+which originated in L<Perl::Critic|Perl::Critic>.  They are organized into
+modules by the kind of PPI class they relate to, by replacing the "PPI" at the
+front of the module name with "PPIx::Utilities", e.g. functionality related to
+L<PPI::Node|PPI::Node>s is in L<PPIx::Utilities::Node|PPIx::Utilities::Node>.
 
 
 =head1 INTERFACE

@@ -250,9 +250,9 @@ following code:
         ...
     }
 
-Calling this function on a L<PPI::Document> for the above returns a value that
-looks like this, using multi-line string literals for the actual code parts
-instead of PPI trees to make this easier to read:
+Calling this function on a L<PPI::Document|PPI::Document> for the above
+returns a value that looks like this, using multi-line string literals for the
+actual code parts instead of PPI trees to make this easier to read:
 
     {
         main    => [

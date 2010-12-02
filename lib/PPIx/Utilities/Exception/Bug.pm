@@ -42,13 +42,13 @@ This document describes PPIx::Utilities::Exception::Bug version 1.1.0.
 
 =head1 DESCRIPTION
 
-This represents a bug in either this module or in L<PPI>.  Something that
+This represents a bug in either this module or in L<PPI|PPI>.  Something that
 should never have happened, did happen.
 
 
 =head1 METHODS
 
-None other than those inherited from L<Exception::Class>.
+None other than those inherited from L<Exception::Class|Exception::Class>.
 
 
 =head1 AUTHOR
