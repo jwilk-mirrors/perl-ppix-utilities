@@ -68,3 +68,4 @@ RCS
 
 # Avoid archives of this distribution
 \bPPIx-Utilities-v?[\d.\_]+
+^MYMETA\.json$

@@ -68,7 +68,6 @@ my $builder = Perl::Critic::Module::Build::Standard->new(
     add_to_cleanup      => [
         qw<
             LICENSE
-            MANIFEST
             MANIFEST.bak
             META.yml
             Makefile
